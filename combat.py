@@ -4,7 +4,9 @@ class Entity:
     hp=1;max_hp=1
     mp=0;max_mp=0
     level=0
+    initiative=0
     possible_actions=[]
+    location=(0,0,0)
 
 class Combatant(Entity):
     def __init__(self,**kwargs):
@@ -14,6 +16,12 @@ class Combatant(Entity):
         self.level = kwargs.get('level',1)
     def act(self):
         pass
+
+class Soil(Entity):
+    pass
+
+class Tree(Entity):
+    pass
 
 class Monster(Combatant):
     def act(self):
@@ -25,9 +33,9 @@ class Player(Combatant):
         pass
 
 class BattleGround:
+    size=(0,0,0)
     def __init__(self,**kwargs):
         pass
-        
     def draw(self):
         pass
 
