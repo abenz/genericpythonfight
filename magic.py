@@ -1,28 +1,29 @@
-from rpg import Dice
+from rng import Dice
 
 class SpellEffect:
     spell = None
-    def __init__(self,spell,**kwargs):
-        self.spell = spell
-        self.stats_affected = kwargs.get('stats_affected',[])
+    def __init__(self,stat,strength,**kwargs):
+        self.stat = stat
+        self.strength = strength
         self.duration = kwargs.get('duration',0)
     def affect(self,target):
-        for stat in self.stats_affected:
-            d = Dice(
-            target['stat'] = target['stat'] - self.spell.
+        pass
+
 class Damage(SpellEffect):
-    pass
+    def affect(self,target):
+        target.stats[self.stat] -= Dice.roll(self.strength)
         
 class Ameliorate(SpellEffect):
-    pass
+    def affect(self,stat,strength,target):
+        target.stats[self.stat] += Dice.roll(self.strength)
 
 class Element:
     strong_against = []
     weak_against = []
-class Water(Element):
+class WaterElement(Element):
     strong_against = ['Earth']
     weak_against = ['Fire']
-class Fire(Element):
+class FireElement(Element):
     strong_against = ['Water','Dark']
     weak_against = ['Earth']
 
@@ -36,39 +37,32 @@ class Spell:
     valid_targets = []
     duration = 1
     status_affected = []
+    def __init__(self, caster, **kwargs):
+        self.caster = caster
+        self.level = kwargs.get('level',1)
     def cast(self,target):
         for effect in self.effects:
             effect.affect(target)
 
 class Fireball(Spell):
-    def __init__(self,**kwargs):
-        self.caster = None
-        self.level = kwargs.get('level',1)
+    def __init__(self,caster,**kwargs):
+        Spell.__init__(self, caster, **kwargs)
         self.name = "Fireball Level %s" % self.level
-        self.element = Fire()
-        self.strength = "%sd%s" % (self.level,4)
+        self.element = FireElement()
+        self.strength = "%sd%s" % (self.level,6)
         self.effects = [
-            Damage(self,stats_affected={'hp':
-                                            {'amount':self.strength}
-                                        })
+            Damage('hp',self.strength)
             ]
+
 class Heal(Spell):
     stats_affected = ['hp']
     def __init__(self,**kwargs):
-        self.caster = None        
-        self.level = kwargs.get('level',1)
         self.name = "Heal Level %s" % self.level
         self.strength = "%sd%s" % (self.level,4)
         self.effects = [
-            Ameliorate(self,'hp')
+            Ameliorate('hp',self.strength)
             ]
+        Spell.__init__(self, caster, **kwargs)
 
 class SpellBook:
     spells = []
-    
-if __name__ == '__main__':
-    f=Fireball(level=3)
-    print f.strength
-
-
-    
